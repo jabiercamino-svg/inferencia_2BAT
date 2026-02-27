@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inferència Estadística — Intervals de Confiança · Batxillerat Avançat</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['$$','$$'],['\\[','\\]']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root {
+  --ink: #1c1c2e;
+  --paper: #f7f4ef;
+  --accent: #c0392b;
+  --accent2: #2471a3;
+  --accent3: #1e8449;
+  --gold: #d4a017;
+  --muted: #6c757d;
+  --border: #ddd8cf;
+  --theory-bg: #eaf2fb;
+  --theory-border: #2471a3;
+  --example-bg: #fef9ec;
+  --example-border: #d4a017;
+  --exercise-bg: #eafaf1;
+  --exercise-border: #1e8449;
+  --formula-bg: #1c1c2e;
+  --card: #ffffff;
+  --warning-bg: #fdf2f8;
+  --warning-border: #8e44ad;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.8;
+}
+
+/* ─── SIDEBAR ─── */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 270px;
+  height: 100vh;
+  background: var(--ink);
+  overflow-y: auto;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 32px 22px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-header .book-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.sidebar-header h1 {
+  font-family: 'Playfair Display', serif;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.sidebar-header .subtitle {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+}
+.nav-group { padding: 14px 0 4px; }
+.nav-group-label {
+  padding: 0 22px 6px;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  font-weight: 600;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  color: rgba(255,255,255,0.58);
+  text-decoration: none;
+  font-size: 0.855rem;
+  border-left: 3px solid transparent;
+  transition: all 0.18s;
+}
+.nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); border-left-color: var(--gold); }
+.nav-link.active { color: #fff; background: rgba(255,255,255,0.07); border-left-color: var(--gold); }
+.nav-link .nav-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  opacity: 0.7;
+  min-width: 20px;
+}
+
+/* ─── MAIN ─── */
+#main { margin-left: 270px; min-height: 100vh; }
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--ink);
+  color: white;
+  padding: 80px 72px 72px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: 'IC';
+  position: absolute;
+  right: 60px;
+  bottom: -20px;
+  font-family: 'Playfair Display', serif;
+  font-size: 11rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  max-width: 620px;
+}
+.hero p {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.6);
+  max-width: 540px;
+  line-height: 1.7;
+}
+.hero-chips { display: flex; gap: 10px; margin-top: 30px; flex-wrap: wrap; }
+.chip { padding: 5px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-decoration: none; cursor: pointer; transition: opacity 0.2s; }
+.chip:hover { opacity: 0.8; }
+.chip-blue  { background: rgba(36,113,163,0.35); color: #7ec8f0; }
+.chip-red   { background: rgba(192,57,43,0.35);  color: #f08070; }
+.chip-green { background: rgba(30,132,73,0.35);  color: #7ed9a0; }
+.chip-gold  { background: rgba(212,160,23,0.35); color: #f0cc70; }
+
+/* ─── CONTENT ─── */
+.content { padding: 60px 72px; max-width: 920px; }
+
+/* ─── SECTION HEADER ─── */
+.section-header {
+  margin: 64px 0 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+.section-header::before {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 60px; height: 2px;
+  background: var(--accent);
+}
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.subsection-header { margin: 40px 0 18px; }
+.subsection-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  border-left: 4px solid var(--accent2);
+  padding-left: 14px;
+}
+
+p { margin-bottom: 16px; }
+
+/* ─── THEORY BOX ─── */
+.theory-box {
+  background: var(--theory-bg);
+  border-left: 4px solid var(--theory-border);
+  border-radius: 0 10px 10px 0;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.theory-box .box-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--theory-border);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+/* ─── EXAMPLE BOX ─── */
+.example-box {
+  background: var(--example-bg);
+  border-left: 4px solid var(--example-border);
+  border-radius: 0 10px 10px 0;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.example-box .box-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a07c10;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.example-title { font-weight: 600; margin-bottom: 12px; font-size: 0.97rem; }
+
+/* ─── EXERCISE BOX ─── */
+.exercise-box {
+  background: var(--exercise-bg);
+  border-left: 4px solid var(--exercise-border);
+  border-radius: 0 10px 10px 0;
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+.exercise-box .box-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent3);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.exercise-title { font-weight: 600; margin-bottom: 12px; font-size: 0.97rem; }
+.exercise-questions { margin: 12px 0 0 22px; }
+.exercise-questions li { margin-bottom: 6px; font-size: 0.95rem; }
+
+/* ─── WARNING BOX ─── */
+.warning-box {
+  background: var(--warning-bg);
+  border-left: 4px solid var(--warning-border);
+  border-radius: 0 10px 10px 0;
+  padding: 20px 24px;
+  margin: 24px 0;
+}
+.warning-box .box-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warning-border);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* ─── FORMULA BOX ─── */
+.formula-box {
+  background: var(--formula-bg);
+  color: white;
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+.formula-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.formula-main {
+  font-size: 1.15rem;
+  margin: 12px 0;
+}
+.formula-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 14px;
+}
+.formula-part {
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.65);
+  flex: 1;
+  min-width: 180px;
+}
+.formula-part strong { color: #7ec8f0; }
+
+/* ─── SOLUTION TOGGLE ─── */
+.solution-toggle { margin-top: 16px; }
+.toggle-btn {
+  background: none;
+  border: 1.5px solid var(--accent3);
+  color: var(--accent3);
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.toggle-btn:hover { background: var(--accent3); color: white; }
+.solution-content {
+  display: none;
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.solution-content.open { display: block; }
+.solution-content p { margin-bottom: 10px; }
+.sol-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent3);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+/* ─── SOLUTION STEPS ─── */
+.solution-steps { list-style: none; margin: 10px 0; }
+.solution-steps li {
+  padding: 5px 0 5px 18px;
+  border-left: 2px solid var(--example-border);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+/* ─── RESULT HIGHLIGHT ─── */
+.result-highlight {
+  display: inline-block;
+  background: var(--ink);
+  color: #7ed9a0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+/* ─── ILLUSTRATION ROW ─── */
+.illus-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.illus-text { flex: 1; }
+.illus-fig {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+/* ─── SUMMARY BOX ─── */
+.summary-box {
+  background: var(--ink);
+  color: white;
+  border-radius: 14px;
+  padding: 32px 36px;
+  margin: 32px 0;
+}
+.summary-box h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--gold);
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.summary-item {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.si-label { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-bottom: 5px; }
+.si-val { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #7ec8f0; }
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 56px 0 0;
+}
+
+/* ─── Z-VALUES TABLE ─── */
+.z-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.9rem;
+}
+.z-table th {
+  background: var(--ink);
+  color: var(--gold);
+  padding: 8px 14px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+.z-table td {
+  padding: 7px 14px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+}
+.z-table tr:nth-child(even) { background: rgba(36,113,163,0.05); }
+.z-table td:first-child { font-weight: 600; color: var(--accent2); }
+
+/* ─── STEPS TABLE ─── */
+.steps-grid {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 0;
+  margin: 16px 0;
+}
+.step-num {
+  background: var(--accent2);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12px;
+  border-radius: 6px 0 0 6px;
+  margin-bottom: 2px;
+}
+.step-content {
+  background: rgba(36,113,163,0.06);
+  padding: 10px 16px;
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 2px;
+  font-size: 0.93rem;
+  border-left: none;
+}
+
+/* ─── VAQUES CONTEXT BANNER ─── */
+.context-banner {
+  background: linear-gradient(135deg, #1a3a2a 0%, #1c1c2e 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 28px 0;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.context-banner .banner-icon { flex-shrink: 0; }
+.context-banner .banner-text h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.context-banner .banner-text p {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.65);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ─── CONFIDENCE INTERVAL VISUAL ─── */
+.ci-visual {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  text-align: center;
+}
+.ci-bar-wrap {
+  position: relative;
+  height: 60px;
+  margin: 14px 0;
+}
+.ci-bar-svg { width: 100%; }
+
+/* ─── FOOTER ─── */
+.page-footer {
+  margin-left: 270px;
+  background: var(--ink);
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  padding: 22px;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* ─── BADGE SIDEBAR ─── */
+.nav-badge {
+  margin-left: auto; font-size: 0.58rem; font-weight: 700;
+  padding: 1px 6px; border-radius: 8px; letter-spacing: 0.04em;
+}
+.badge-adv  { background: rgba(212,160,23,0.3); color: #f0cc70; }
+.badge-pau  { background: rgba(192,57,43,0.3);  color: #f08070; }
+/* ─── DIFICULTAT PILL ─── */
+.diff-pill {
+  display: inline-block; font-size: 0.63rem; font-weight: 700;
+  padding: 2px 9px; border-radius: 10px; letter-spacing: 0.06em;
+  margin-left: 6px; vertical-align: middle;
+}
+.diff-adv  { background: rgba(212,160,23,0.18); color: #a07c10; border: 1px solid #d4a017; }
+.diff-pau  { background: rgba(192,57,43,0.18);  color: #c0392b; border: 1px solid #c0392b; }
+/* ─── ESTIMADORS TABLE ─── */
+.est-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.9rem; }
+.est-table th {
+  background: #2c3e50; color: #f0cc70;
+  padding: 10px 16px; text-align: left; font-size: 0.78rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.est-table td { padding: 9px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.est-table tr:hover { background: rgba(36,113,163,0.04); }
+.est-table td:first-child { font-weight: 600; color: var(--accent2); font-size: 0.9rem; }
+.est-table td:nth-child(3) { font-family: 'JetBrains Mono', monospace; font-size: 0.83rem; }
+/* ─── EXERCISE INDEX GRID ─── */
+.exercise-index {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px; margin: 28px 0;
+}
+.ei-card {
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 14px 18px;
+  text-decoration: none; color: var(--ink);
+  transition: all 0.18s; display: flex; flex-direction: column; gap: 4px;
+}
+.ei-card:hover {
+  border-color: var(--accent2); background: var(--theory-bg);
+  transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+.ei-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); font-weight: 700; }
+.ei-title { font-weight: 600; font-size: 0.9rem; line-height: 1.35; }
+.ei-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.ei-tag { font-size: 0.62rem; font-weight: 700; padding: 1px 7px; border-radius: 8px; }
+.tag-ic  { background: rgba(36,113,163,0.12);  color: #2471a3; }
+.tag-est { background: rgba(212,160,23,0.12);  color: #a07c10; }
+.tag-ms  { background: rgba(30,132,73,0.12);   color: #1e8449; }
+.tag-pr  { background: rgba(192,57,43,0.12);   color: #c0392b; }
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  #sidebar { width: 220px; }
+  #main { margin-left: 220px; }
+  .hero { padding: 50px 32px; }
+  .content { padding: 40px 32px; }
+  .page-footer { margin-left: 220px; }
+  .illus-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════ SIDEBAR ════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="book-label">Matemàtiques · 2n Batxillerat</div>
+    <h1>Inferència Estadística</h1>
+    <div class="subtitle">Intervals de Confiança · Nivell Avançat</div>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Teoria</div>
+    <a class="nav-link" href="#intro"><span class="nav-num">00</span>Context i motivació</a>
+    <a class="nav-link" href="#tcl"><span class="nav-num">01</span>Teorema Central del Límit</a>
+    <a class="nav-link" href="#estimacio"><span class="nav-num">02</span>Estimació puntual</a>
+    <a class="nav-link" href="#ic-mitjana"><span class="nav-num">03</span>IC per a la mitjana</a>
+    <a class="nav-link" href="#ic-proporcio"><span class="nav-num">04</span>IC per a la proporció</a>
+    <a class="nav-link" href="#mida-mostral"><span class="nav-num">05</span>Mida mostral òptima</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Exercicis</div>
+    <a class="nav-link" href="#ex1"><span class="nav-num">E01</span>Vaques frisones PAU <span class="nav-badge badge-pau">PAU</span></a>
+    <a class="nav-link" href="#ex2"><span class="nav-num">E02</span>Producció de llet <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex3"><span class="nav-num">E03</span>Temperatura corporal <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex4"><span class="nav-num">E04</span>Consum de pinso <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex5"><span class="nav-num">E05</span>Proporció de races <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex6"><span class="nav-num">E06</span>Planificació mostral <span class="nav-badge badge-pau">PAU</span></a>
+    <a class="nav-link" href="#ex7"><span class="nav-num">E07</span>Guany econòmic <span class="nav-badge badge-pau">PAU</span></a>
+    <a class="nav-link" href="#ex8"><span class="nav-num">E08</span>Incidència mastitis <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex9"><span class="nav-num">E09</span>Dues granges <span class="nav-badge badge-pau">PAU</span></a>
+    <a class="nav-link" href="#ex10"><span class="nav-num">E10</span>Qualitat nutricional <span class="nav-badge badge-adv">ADV</span></a>
+    <a class="nav-link" href="#ex11"><span class="nav-num">E11</span>Estudi longitudinal <span class="nav-badge badge-pau">PAU</span></a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-group-label">Referència</div>
+    <a class="nav-link" href="#taula-z"><span class="nav-num">Z</span>Valors z habituals</a>
+    <a class="nav-link" href="#resum"><span class="nav-num">★</span>Resum de fórmules</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════ MAIN ════════════════════════════════════ -->
+<div id="main">
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-label">Unitat 8 · Estadística Inferencial · Nivell Avançat</div>
+  <h1>Inferència Estadística i Intervals de Confiança</h1>
+  <p>Teoria completa, estimació puntual i <strong>11 exercicis d'estil PAU</strong> sobre el context real de la <em>granja de vaques frisones</em>. Des del Teorema Central del Límit fins a la mida mostral òptima.</p>
+  <div class="hero-chips">
+    <a class="chip chip-blue"  href="#tcl">TCL</a>
+    <a class="chip chip-gold"  href="#estimacio">Estimació puntual</a>
+    <a class="chip chip-green" href="#ic-mitjana">IC Mitjana</a>
+    <a class="chip chip-red"   href="#ic-proporcio">IC Proporció</a>
+    <a class="chip chip-gold"  href="#mida-mostral">Mida mostral</a>
+    <a class="chip chip-blue"  href="#ex1">11 Exercicis resolts</a>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 0 · CONTEXT                          -->
+<!-- ════════════════════════════════════════════ -->
+<div id="intro" class="section-header">
+  <div class="section-num">Secció 0 · Context i motivació</div>
+  <h2>Per què inferència estadística?</h2>
+</div>
+
+<p>Imagina que ets el responsable d'una <strong>granja de vaques frisones</strong> al Penedès. Vols saber el pes mitjà de totes les vaques de la granja, però pesar-les totes és costós i lent. La solució: <em>agafes una mostra</em> de 10, 20 o 30 vaques i, a partir d'aquesta mostra, <strong>estimes</strong> el pes de tota la població.</p>
+
+<p>Aquí entra la <strong>inferència estadística</strong>: la branca de l'estadística que ens permet extreure conclusions sobre una <em>població</em> a partir d'una <em>mostra</em>, quantificant la <em>incertesa</em> d'aquesta estimació.</p>
+
+<div class="context-banner">
+  <div class="banner-icon">
+    <!-- SVG vaca frisona -->
+    <svg width="90" height="80" viewBox="0 0 90 80" xmlns="http://www.w3.org/2000/svg">
+      <!-- cos -->
+      <ellipse cx="45" cy="48" rx="28" ry="18" fill="#f0ede8" stroke="#555" stroke-width="1.5"/>
+      <!-- taques -->
+      <ellipse cx="38" cy="44" rx="9" ry="7" fill="#333" opacity="0.7"/>
+      <ellipse cx="56" cy="52" rx="7" ry="5" fill="#333" opacity="0.6"/>
+      <ellipse cx="44" cy="56" rx="5" ry="4" fill="#333" opacity="0.5"/>
+      <!-- cap -->
+      <ellipse cx="72" cy="42" rx="12" ry="10" fill="#f0ede8" stroke="#555" stroke-width="1.5"/>
+      <!-- musell -->
+      <ellipse cx="80" cy="46" rx="6" ry="5" fill="#e8c4b0" stroke="#aaa" stroke-width="1"/>
+      <!-- forats nasal -->
+      <circle cx="78" cy="46" r="1.2" fill="#c09080"/>
+      <circle cx="82" cy="46" r="1.2" fill="#c09080"/>
+      <!-- ull -->
+      <circle cx="74" cy="38" r="2.5" fill="#333"/>
+      <circle cx="75" cy="37.5" r="0.8" fill="white"/>
+      <!-- banyes -->
+      <path d="M68,33 Q62,22 56,26" stroke="#d4a017" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M76,33 Q78,22 85,25" stroke="#d4a017" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- cua -->
+      <path d="M17,48 Q8,44 10,56 Q12,62 16,60" stroke="#888" stroke-width="2" fill="none"/>
+      <!-- potes -->
+      <rect x="32" y="63" width="6" height="14" rx="2" fill="#ddd" stroke="#aaa" stroke-width="1"/>
+      <rect x="42" y="63" width="6" height="14" rx="2" fill="#ddd" stroke="#aaa" stroke-width="1"/>
+      <rect x="52" y="63" width="6" height="14" rx="2" fill="#ddd" stroke="#aaa" stroke-width="1"/>
+      <rect x="62" y="63" width="6" height="14" rx="2" fill="#ddd" stroke="#aaa" stroke-width="1"/>
+      <!-- braguer -->
+      <ellipse cx="50" cy="65" rx="10" ry="5" fill="#f4c6b0" stroke="#daa" stroke-width="1"/>
+      <!-- etiqueta pes -->
+      <rect x="28" y="26" width="28" height="13" rx="3" fill="white" stroke="#2471a3" stroke-width="1.2"/>
+      <text x="42" y="35" text-anchor="middle" font-size="7.5" fill="#2471a3" font-weight="700" font-family="JetBrains Mono, monospace">580 kg?</text>
+    </svg>
+  </div>
+  <div class="banner-text">
+    <h4>Context del curs: la granja de vaques frisones</h4>
+    <p>Tots els exercicis d'aquesta unitat segueixen el context d'una granja de vaques frisones dedicada a la producció de llet. La variable d'estudi és el pes de les vaques (distribució normal, \(\mu = 580\) kg, \(\sigma = 25\) kg). A partir d'aquest context realista aprendrem tots els conceptes d'inferència estadística.</p>
+  </div>
+</div>
+
+<div class="theory-box">
+  <div class="box-label">Conceptes clau · Vocabulari</div>
+  <p><strong>Població:</strong> el conjunt complet que volem estudiar. Ex: totes les vaques de la granja.</p>
+  <p><strong>Mostra:</strong> subconjunt representatiu de la població. Ex: 10 vaques escollides a l'atzar.</p>
+  <p><strong>Paràmetre:</strong> valor que descriu la <em>població</em> (desconegut). Ex: mitjana real \(\mu\).</p>
+  <p><strong>Estadístic:</strong> valor calculat a partir de la <em>mostra</em> (conegut). Ex: mitjana mostral \(\bar{x}\).</p>
+  <p style="margin:0"><strong>Interval de confiança (IC):</strong> rang de valors on esperem que es trobi el paràmetre desconegut amb una probabilitat determinada (nivell de confiança \(1-\alpha\)).</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 1 · TEOREMA CENTRAL DEL LÍMIT         -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="tcl" class="section-header">
+  <div class="section-num">Secció 1 · Teorema Central del Límit</div>
+  <h2>Teorema Central del Límit (TCL)</h2>
+</div>
+
+<p>El TCL és el <strong>fonament</strong> de tota la inferència estadística. Ens garanteix que, per a mostres suficientment grans, la distribució de les mitjanes mostrals s'assembla a una distribució normal, <em>independentment de la distribució original</em> de la població.</p>
+
+<div class="formula-box">
+  <div class="formula-label">Teorema Central del Límit</div>
+  <p style="color:rgba(255,255,255,0.7); font-size:0.92rem; margin-bottom:12px">Si \(X_1, X_2, \ldots, X_n\) és una mostra aleatòria de mida \(n\) d'una població amb mitjana \(\mu\) i desviació típica \(\sigma\), llavors la distribució de la mitjana mostral \(\bar{X}\) tendeix a una normal:</p>
+  <div class="formula-main">
+    $$\bar{X} \sim N\!\left(\mu,\; \frac{\sigma}{\sqrt{n}}\right) \qquad \text{per a } n \geq 30$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part"><strong>Mitjana de \(\bar{X}\):</strong> \(\mu_{\bar{X}} = \mu\)</div>
+    <div class="formula-part"><strong>Error estàndard:</strong> \(\sigma_{\bar{X}} = \dfrac{\sigma}{\sqrt{n}}\)</div>
+    <div class="formula-part"><strong>Tipificació:</strong> \(Z = \dfrac{\bar{X} - \mu}{\sigma/\sqrt{n}}\)</div>
+  </div>
+</div>
+
+<div class="theory-box">
+  <div class="box-label">Quan s'aplica el TCL?</div>
+  <p><strong>Sempre</strong> si \(n \geq 30\) (mostra gran), independentment de la distribució original.</p>
+  <p>Si la <em>població ja és normal</em> (\(X \sim N(\mu, \sigma)\)), el TCL s'aplica per a <strong>qualsevol</strong> mida de mostra, fins i tot \(n &lt; 30\).</p>
+  <p style="margin:0; font-size:0.88rem; color:var(--muted)">En el cas de les vaques frisones: el pes segueix una distribució normal, per tant podem usar el TCL per a qualsevol mida mostral.</p>
+</div>
+
+<div class="example-box">
+  <div class="box-label">Exemple resolt · Vaques frisones</div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="example-title">El pes de les vaques frisones segueix \(N(580, 25)\). S'agafa una mostra de \(n = 25\) vaques. Quina és la distribució de \(\bar{X}\)?</div>
+      <ul class="solution-steps">
+        <li>Població: \(X \sim N(580, 25)\) → normal, TCL vàlid per a qualsevol \(n\).</li>
+        <li>Error estàndard: \(\sigma_{\bar{X}} = \dfrac{25}{\sqrt{25}} = \dfrac{25}{5} = 5\) kg</li>
+        <li>Distribució de la mitjana mostral: \(\bar{X} \sim N(580, 5)\)</li>
+        <li>La campana de \(\bar{X}\) és <strong>més estreta</strong> que la de \(X\): les mostres "promitgen" els extrems.</li>
+      </ul>
+      <div class="result-highlight">\(\bar{X} \sim N(580,\; 5)\)</div>
+    </div>
+    <div class="illus-fig">
+      <!-- SVG: dues campanes superposades -->
+      <svg width="130" height="120" viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg">
+        <!-- eixos -->
+        <line x1="10" y1="100" x2="125" y2="100" stroke="#bbb" stroke-width="1.5"/>
+        <line x1="10" y1="10" x2="10" y2="100" stroke="#bbb" stroke-width="1.5"/>
+        <!-- campana ampla: X ~ N(580,25) -->
+        <path d="M15,98 Q30,97 45,80 Q60,40 65,20 Q70,40 85,80 Q100,97 115,98" 
+              fill="none" stroke="#2471a3" stroke-width="2" opacity="0.5" stroke-dasharray="4,3"/>
+        <!-- campana estreta: X̄ ~ N(580,5) -->
+        <path d="M35,98 Q45,97 52,80 Q58,50 65,15 Q72,50 78,80 Q85,97 95,98" 
+              fill="rgba(30,132,73,0.15)" stroke="#1e8449" stroke-width="2"/>
+        <!-- etiquetes -->
+        <text x="25" y="75" font-size="7.5" fill="#2471a3" font-weight="600">X ~ N(580,25)</text>
+        <text x="38" y="50" font-size="7.5" fill="#1e8449" font-weight="600">X̄ ~ N(580,5)</text>
+        <!-- línia central -->
+        <line x1="65" y1="15" x2="65" y2="100" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="60" y="112" font-size="7" fill="#888">580</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 2 · ESTIMACIÓ PUNTUAL                -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="estimacio" class="section-header">
+  <div class="section-num">Secció 2 · Estimació puntual</div>
+  <h2>Estimació puntual</h2>
+</div>
+
+<p>L'<strong>estimació puntual</strong> consisteix a usar un únic valor numèric (un estadístic mostral) per aproximar un paràmetre desconegut de la població. Per a PAU és important saber <em>quins estimadors</em> s'utilitzen i per quina propietat matemàtica els preferim.</p>
+
+<div class="subsection-header"><h3>2.1 Propietats desitjables d'un estimador</h3></div>
+
+<div class="theory-box">
+  <div class="box-label">Propietats dels estimadors</div>
+  <p><strong>1. Insesgat (no biasat):</strong> la mitjana dels valors que prendria l'estimador en totes les mostres possibles és igual al paràmetre real. Formalment: \(E[\hat{\theta}] = \theta\).</p>
+  <p><strong>2. Consistent:</strong> quan \(n \to \infty\), l'estimador convergeix al paràmetre real. Els errors s'aproximen a zero.</p>
+  <p style="margin:0"><strong>3. Eficient:</strong> entre tots els estimadors insesgats, el que té la variància mínima. La variància de \(\bar{X}\) és \(\sigma^2/n\).</p>
+</div>
+
+<div class="subsection-header"><h3>2.2 Estimadors habituals a Batxillerat</h3></div>
+
+<table class="est-table">
+  <thead>
+    <tr><th>Paràmetre</th><th>Estimador</th><th>Fórmula</th><th>Propietats</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mitjana \(\mu\)</td>
+      <td>Mitjana mostral \(\bar{x}\)</td>
+      <td>\(\bar{x} = \frac{1}{n}\sum x_i\)</td>
+      <td>Insesgat, consistent, eficient</td>
+    </tr>
+    <tr>
+      <td>Proporció \(p\)</td>
+      <td>Proporció mostral \(\hat{p}\)</td>
+      <td>\(\hat{p} = k/n\)</td>
+      <td>Insesgat, consistent</td>
+    </tr>
+    <tr>
+      <td>Variança \(\sigma^2\)</td>
+      <td>Variança corregida \(s^2\)</td>
+      <td>\(s^2 = \frac{1}{n-1}\sum(x_i-\bar{x})^2\)</td>
+      <td>Insesgat (cal \(n-1\)!)</td>
+    </tr>
+    <tr>
+      <td>Desv. típica \(\sigma\)</td>
+      <td>Desv. típica mostral \(s\)</td>
+      <td>\(s = \sqrt{s^2}\)</td>
+      <td>Consistent per \(n\) gran</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="warning-box">
+  <div class="box-label">⚠ Per qué dividim per (n−1) i no per n?</div>
+  <p>Si calculéssim \(s^2\) dividint per \(n\), obtindríem un estimador <strong>biasat</strong>: en mitja, infraestimaríem \(\sigma^2\). Dividir per \(n-1\) (correcció de Bessel) fa que \(E[s^2] = \sigma^2\). A les PAU, quan calculeu \(s\) a partir de les dades, useu \(n-1\) al denominador.</p>
+</div>
+
+<div class="example-box">
+  <div class="box-label">Exemple resolt · Càlcul d'estimadors a partir de dades</div>
+  <div class="example-title">Les 10 vaques de la mostra del juny 2025 pesen (kg): 569, 575, 611, 581, 583, 614, 589, 555, 566, 571. Calculeu \(\bar{x}\) i \(s\).</div>
+  <ul class="solution-steps">
+    <li><strong>Mitjana:</strong> \(\bar{x} = (569+575+611+581+583+614+589+555+566+571)/10 = 5814/10 = 581{,}4\) kg</li>
+    <li><strong>Desviacions al quadrat:</strong> \((569-581{,}4)^2=153{,}76\), \((575-581{,}4)^2=40{,}96\), \((611-581{,}4)^2=876{,}16\), \((581-581{,}4)^2=0{,}16\), \((583-581{,}4)^2=2{,}56\), \((614-581{,}4)^2=1062{,}76\), \((589-581{,}4)^2=57{,}76\), \((555-581{,}4)^2=696{,}96\), \((566-581{,}4)^2=237{,}16\), \((571-581{,}4)^2=108{,}16\)</li>
+    <li><strong>Suma:</strong> \(\sum(x_i-\bar{x})^2 = 3236{,}4\)</li>
+    <li><strong>Variança mostral corregida:</strong> \(s^2 = 3236{,}4/9 = 359{,}6\)</li>
+    <li><strong>Desviació típica mostral:</strong> \(s = \sqrt{359{,}6} \approx 18{,}97\) kg</li>
+  </ul>
+  <div class="result-highlight">\(\bar{x} = 581{,}4\) kg &nbsp;·&nbsp; \(s \approx 18{,}97\) kg</div>
+  <p style="font-size:0.87rem; color:var(--muted); margin-top:8px">Nota: l'enunciat dóna \(\sigma=25\) kg (paràmetre poblacional). El valor \(s \approx 18{,}97\) és l'estimació a partir de la mostra, que no ha de coincidir exactament amb \(\sigma\).</p>
+</div>
+
+<div class="warning-box">
+  <div class="box-label">⚠ Limitació de l'estimació puntual</div>
+  <p>Un únic valor no informa sobre la <em>precisió</em> de l'estimació. Dir "la mitjana és 581,4 kg" no diu si podria ser 560 o 600. Per quantificar la incertesa s'usen els <strong>intervals de confiança</strong>.</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 3 · IC PER A LA MITJANA              -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="ic-mitjana" class="section-header">
+  <div class="section-num">Secció 3 · Intervals de confiança per a la mitjana</div>
+  <h2>IC per a la Mitjana</h2>
+</div>
+
+<p>Un <strong>interval de confiança</strong> per a la mitjana és un rang \([L_i, L_s]\) tal que afirmem amb un <em>nivell de confiança</em> \((1-\alpha)\cdot 100\%\) que la mitjana real \(\mu\) es troba dins d'aquest interval.</p>
+
+<div class="ci-visual">
+  <svg width="100%" height="70" viewBox="0 0 500 70" xmlns="http://www.w3.org/2000/svg">
+    <!-- línia base -->
+    <line x1="50" y1="40" x2="450" y2="40" stroke="#ddd" stroke-width="2"/>
+    <!-- interval -->
+    <line x1="140" y1="30" x2="360" y2="30" stroke="#2471a3" stroke-width="4" stroke-linecap="round"/>
+    <line x1="140" y1="22" x2="140" y2="38" stroke="#2471a3" stroke-width="3"/>
+    <line x1="360" y1="22" x2="360" y2="38" stroke="#2471a3" stroke-width="3"/>
+    <!-- x̄ central -->
+    <circle cx="250" cy="30" r="6" fill="#c0392b"/>
+    <text x="250" y="18" text-anchor="middle" font-size="11" fill="#c0392b" font-weight="700" font-family="serif">x̄</text>
+    <!-- etiquetes límits -->
+    <text x="140" y="55" text-anchor="middle" font-size="11" fill="#2471a3" font-family="JetBrains Mono, monospace">L_i</text>
+    <text x="360" y="55" text-anchor="middle" font-size="11" fill="#2471a3" font-family="JetBrains Mono, monospace">L_s</text>
+    <!-- error -->
+    <line x1="250" y1="30" x2="360" y2="30" stroke="#d4a017" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+    <text x="305" y="20" text-anchor="middle" font-size="10" fill="#a07c10">e</text>
+    <!-- text interval -->
+    <text x="250" y="68" text-anchor="middle" font-size="10" fill="#888">Interval de confiança (1−α)·100%</text>
+  </svg>
+</div>
+
+<div id="ic-var-coneguda" class="subsection-header">
+  <h3>3.1 Variància poblacional \(\sigma^2\) coneguda</h3>
+</div>
+
+<p>Quan coneixem la desviació típica <strong>real</strong> de la població \(\sigma\), i la mostra és gran o la població és normal:</p>
+
+<div class="formula-box">
+  <div class="formula-label">IC per a μ — σ coneguda (mostres normals o grans)</div>
+  <div class="formula-main">
+    $$\left[\bar{x} - z_{\gamma} \cdot \frac{\sigma}{\sqrt{n}},\;\; \bar{x} + z_{\gamma} \cdot \frac{\sigma}{\sqrt{n}}\right]$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part"><strong>\(\bar{x}\):</strong> mitjana mostral</div>
+    <div class="formula-part"><strong>\(\sigma\):</strong> desviació típica <em>poblacional</em></div>
+    <div class="formula-part"><strong>\(n\):</strong> mida de la mostra</div>
+    <div class="formula-part"><strong>\(z_\gamma\):</strong> valor crític (taula Z)</div>
+  </div>
+</div>
+
+<div class="theory-box">
+  <div class="box-label">Valors crítics z més habituals a PAU</div>
+  <table class="z-table">
+    <thead>
+      <tr>
+        <th>Nivell de confiança</th>
+        <th>α</th>
+        <th>α/2</th>
+        <th>z<sub>γ</sub> = z<sub>1−α/2</sub></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>90%</td><td>0,10</td><td>0,05</td><td>1,645</td></tr>
+      <tr><td>95%</td><td>0,05</td><td>0,025</td><td>1,960</td></tr>
+      <tr><td>99%</td><td>0,01</td><td>0,005</td><td>2,576</td></tr>
+    </tbody>
+  </table>
+  <p style="margin:6px 0 0; font-size:0.85rem; color:var(--muted)">A les PAU de Batxillerat acostumen a donar \(P(-1{,}96 \leq Z \leq 1{,}96) = 0{,}95\) i \(P(-2{,}58 \leq Z \leq 2{,}58) = 0{,}99\). Usem \(z_{0,95} = 1{,}96\) i \(z_{0,99} = 2{,}58\).</p>
+</div>
+
+<div class="theory-box">
+  <div class="box-label">Protocol pas a pas per construir un IC</div>
+  <div class="steps-grid">
+    <div class="step-num">1</div>
+    <div class="step-content"><strong>Identifica</strong> \(\bar{x}\), \(\sigma\), \(n\) i el nivell de confiança.</div>
+    <div class="step-num">2</div>
+    <div class="step-content"><strong>Tria</strong> el valor crític \(z_\gamma\) de la taula.</div>
+    <div class="step-num">3</div>
+    <div class="step-content"><strong>Calcula</strong> l'error: \(e = z_\gamma \cdot \dfrac{\sigma}{\sqrt{n}}\)</div>
+    <div class="step-num">4</div>
+    <div class="step-content"><strong>Construeix</strong> l'interval: \([\bar{x} - e,\;\; \bar{x} + e]\)</div>
+    <div class="step-num">5</div>
+    <div class="step-content"><strong>Interpreta:</strong> "Amb un (1−α)·100% de confiança, la mitjana real \(\mu\) es troba entre [L_i] i [L_s]."</div>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="box-label">Exemple resolt · IC 95% per al pes de vaques</div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="example-title">Una mostra de \(n = 10\) vaques frisones dóna una mitjana de \(\bar{x} = 583\) kg. Sabem que \(\sigma = 25\) kg. Construïu un IC al 95% per al pes mitjà de totes les vaques.</div>
+      <ul class="solution-steps">
+        <li><strong>Dades:</strong> \(\bar{x} = 583\), \(\sigma = 25\), \(n = 10\), nivell = 95% → \(z_{0,95} = 1{,}96\)</li>
+        <li><strong>Error:</strong> \(e = 1{,}96 \cdot \dfrac{25}{\sqrt{10}} = 1{,}96 \cdot 7{,}906 = 15{,}496 \approx 15{,}5\) kg</li>
+        <li><strong>Límit inferior:</strong> \(L_i = 583 - 15{,}5 = 567{,}5\) kg</li>
+        <li><strong>Límit superior:</strong> \(L_s = 583 + 15{,}5 = 598{,}5\) kg</li>
+      </ul>
+      <div class="result-highlight">IC 95%: [567,5 ; 598,5] kg</div>
+      <p style="margin-top:10px; font-size:0.88rem; color:var(--muted)"><em>Interpretació:</em> Amb un 95% de confiança, el pes mitjà real de les vaques frisones de la granja és entre 567,5 kg i 598,5 kg.</p>
+    </div>
+    <div class="illus-fig">
+      <!-- SVG: escala amb interval -->
+      <svg width="110" height="130" viewBox="0 0 110 130" xmlns="http://www.w3.org/2000/svg">
+        <!-- escala bàscula -->
+        <ellipse cx="55" cy="100" rx="40" ry="12" fill="#ddd" stroke="#aaa" stroke-width="1.5"/>
+        <rect x="40" y="55" width="30" height="50" rx="4" fill="#eee" stroke="#aaa" stroke-width="1.5"/>
+        <rect x="42" y="58" width="26" height="20" rx="3" fill="white" stroke="#2471a3" stroke-width="1"/>
+        <text x="55" y="71" text-anchor="middle" font-size="7.5" fill="#2471a3" font-weight="700" font-family="JetBrains Mono, monospace">583 kg</text>
+        <!-- interval sobre la pantalla -->
+        <rect x="12" y="25" width="86" height="22" rx="5" fill="#eaf2fb" stroke="#2471a3" stroke-width="1.5"/>
+        <text x="55" y="35" text-anchor="middle" font-size="7" fill="#2471a3" font-weight="700" font-family="JetBrains Mono, monospace">[567,5 ; 598,5]</text>
+        <text x="55" y="43" text-anchor="middle" font-size="6.5" fill="#888">IC 95%</text>
+        <!-- pota bàscula -->
+        <rect x="50" y="105" width="10" height="18" rx="2" fill="#ccc"/>
+        <ellipse cx="55" cy="123" rx="15" ry="5" fill="#bbb"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div id="ic-var-desconeguda" class="subsection-header">
+  <h3>3.2 Variància poblacional \(\sigma^2\) desconeguda (mostres grans)</h3>
+</div>
+
+<p>Quan <strong>no coneixem</strong> \(\sigma\) però tenim una mostra gran (\(n \geq 30\)), substituïm \(\sigma\) per la desviació típica mostral \(s\):</p>
+
+<div class="formula-box">
+  <div class="formula-label">IC per a μ — σ desconeguda, mostra gran (n ≥ 30)</div>
+  <div class="formula-main">
+    $$\left[\bar{x} - z_{\gamma} \cdot \frac{s}{\sqrt{n}},\;\; \bar{x} + z_{\gamma} \cdot \frac{s}{\sqrt{n}}\right]$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part"><strong>\(s\):</strong> desviació típica <em>mostral</em> (estimació de \(\sigma\))</div>
+    <div class="formula-part"><strong>Condició:</strong> \(n \geq 30\) (TCL garanteix normalitat)</div>
+  </div>
+</div>
+
+<div class="warning-box">
+  <div class="box-label">⚠ Atenció: σ vs s</div>
+  <p><strong>\(\sigma\):</strong> desviació típica de la <em>població</em>. La donarà l'enunciat si és coneguda.</p>
+  <p style="margin:0"><strong>\(s\):</strong> desviació típica de la <em>mostra</em>. La calcules tu a partir de les dades. A PAU, si l'enunciat diu "desviació típica de la mostra" o t'ha de calcular, és \(s\). Si diu "desviació típica de la distribució", és \(\sigma\).</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 4 · IC PER A LA PROPORCIÓ           -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="ic-proporcio" class="section-header">
+  <div class="section-num">Secció 4 · Intervals de confiança per a la proporció</div>
+  <h2>IC per a la Proporció</h2>
+</div>
+
+<p>Quan estudiem una característica qualitativa (ex: proporció de vaques que superen 600 kg), usem la <strong>proporció mostral</strong> \(\hat{p} = k/n\) per estimar la proporció real \(p\) de la població.</p>
+
+<div class="formula-box">
+  <div class="formula-label">IC per a la proporció p — mostres grans</div>
+  <div class="formula-main">
+    $$\left[\hat{p} - z_{\gamma} \cdot \sqrt{\frac{\hat{p}(1-\hat{p})}{n}},\;\; \hat{p} + z_{\gamma} \cdot \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\right]$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part"><strong>\(\hat{p} = k/n\):</strong> proporció mostral</div>
+    <div class="formula-part"><strong>\(\hat{q} = 1 - \hat{p}\):</strong> complement</div>
+    <div class="formula-part"><strong>Condició:</strong> \(n\hat{p} \geq 5\) i \(n\hat{q} \geq 5\)</div>
+    <div class="formula-part"><strong>Error:</strong> \(e = z_\gamma\sqrt{\hat{p}\hat{q}/n}\)</div>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="box-label">Exemple resolt · Proporció de vaques d'alta producció</div>
+  <div class="example-title">En una mostra de \(n = 200\) vaques, 54 superen els 600 kg. Construïu un IC al 99% per a la proporció real de vaques que superen 600 kg.</div>
+  <ul class="solution-steps">
+    <li><strong>Proporció mostral:</strong> \(\hat{p} = 54/200 = 0{,}27\), \(\hat{q} = 1 - 0{,}27 = 0{,}73\)</li>
+    <li><strong>Condicions:</strong> \(n\hat{p} = 54 \geq 5\) ✓ | \(n\hat{q} = 146 \geq 5\) ✓</li>
+    <li><strong>Valor crític:</strong> nivell 99% → \(z_{0,99} = 2{,}58\)</li>
+    <li><strong>Error:</strong> \(e = 2{,}58 \cdot \sqrt{\dfrac{0{,}27 \cdot 0{,}73}{200}} = 2{,}58 \cdot \sqrt{0{,}000985} = 2{,}58 \cdot 0{,}03138 = 0{,}0810\)</li>
+    <li><strong>IC:</strong> \([0{,}27 - 0{,}081;\; 0{,}27 + 0{,}081] = [0{,}189;\; 0{,}351]\)</li>
+  </ul>
+  <div class="result-highlight">IC 99%: [18,9% ; 35,1%]</div>
+  <p style="font-size:0.88rem; color:var(--muted); margin-top:8px"><em>Interpretació:</em> Amb un 99% de confiança, entre el 18,9% i el 35,1% de les vaques de la granja superen els 600 kg.</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- SECCIÓ 5 · MIDA MOSTRAL ÒPTIMA             -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="mida-mostral" class="section-header">
+  <div class="section-num">Secció 5 · Mida mostral òptima</div>
+  <h2>Mida mostral òptima</h2>
+</div>
+
+<p>Sovint cal decidir <strong>quantes observacions</strong> cal prendre per garantir un cert marge d'error. La fórmula de la mida mostral és:</p>
+
+<div class="formula-box">
+  <div class="formula-label">Mida mostral per a la mitjana</div>
+  <div class="formula-main">
+    $$n \geq \left(\frac{z_{\gamma} \cdot \sigma}{e}\right)^2$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part"><strong>\(e\):</strong> error màxim admissible</div>
+    <div class="formula-part"><strong>Arrodoniment:</strong> sempre cap amunt (⌈ ⌉)</div>
+  </div>
+</div>
+
+<div class="formula-box">
+  <div class="formula-label">Mida mostral per a la proporció</div>
+  <div class="formula-main">
+    $$n \geq \frac{z_{\gamma}^2 \cdot \hat{p}(1-\hat{p})}{e^2}$$
+  </div>
+  <div class="formula-parts">
+    <div class="formula-part">Si no es coneix \(\hat{p}\), usar \(\hat{p} = 0{,}5\) (màxima incertesa)</div>
+    <div class="formula-part">Arrodonir sempre cap amunt</div>
+  </div>
+</div>
+
+<div class="example-box">
+  <div class="box-label">Exemple resolt · Quantes vaques cal pesar?</div>
+  <div class="example-title">Volem estimar el pes mitjà de les vaques amb un error màxim de 5 kg i un nivell de confiança del 95%. Sabem que \(\sigma = 25\) kg. Quina és la mida mostral mínima?</div>
+  <ul class="solution-steps">
+    <li><strong>Dades:</strong> \(e = 5\), \(\sigma = 25\), \(z_{0,95} = 1{,}96\)</li>
+    <li>\(n \geq \left(\dfrac{1{,}96 \cdot 25}{5}\right)^2 = \left(\dfrac{49}{5}\right)^2 = (9{,}8)^2 = 96{,}04\)</li>
+    <li>Arrodonint cap amunt: \(n \geq 97\)</li>
+  </ul>
+  <div class="result-highlight">Cal pesar almenys 97 vaques</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- EXERCICIS PAU · 11 EXERCICIS                  -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div class="section-header">
+  <div class="section-num">Exercicis PAU · Batxillerat Avançat</div>
+  <h2>11 Exercicis resolts</h2>
+</div>
+
+<p>Tots els exercicis segueixen el context de la granja de vaques frisones. Les etiquetes indiquen la dificultat:</p>
+
+<div class="exercise-index">
+  <a class="ei-card" href="#ex1">
+    <div class="ei-num">E01</div><div class="ei-title">Vaques frisones (Juny 2025 PAU)</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">IC Mitjana σ coneguda</span><span class="ei-tag tag-pr">PAU real</span></div>
+  </a>
+  <a class="ei-card" href="#ex2">
+    <div class="ei-num">E02</div><div class="ei-title">Producció diària de llet</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">IC Mitjana</span><span class="ei-tag tag-ms">Mida mostral</span></div>
+  </a>
+  <a class="ei-card" href="#ex3">
+    <div class="ei-num">E03</div><div class="ei-title">Temperatura corporal</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">IC Mitjana σ descon.</span><span class="ei-tag tag-est">Interpretació</span></div>
+  </a>
+  <a class="ei-card" href="#ex4">
+    <div class="ei-num">E04</div><div class="ei-title">Consum de pinso per dia</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">Comparació IC</span><span class="ei-tag tag-ms">Mida mostral</span></div>
+  </a>
+  <a class="ei-card" href="#ex5">
+    <div class="ei-num">E05</div><div class="ei-title">Proporció de races pures</div>
+    <div class="ei-tags"><span class="ei-tag tag-pr">IC Proporció</span><span class="ei-tag tag-est">Contrastació</span></div>
+  </a>
+  <a class="ei-card" href="#ex6">
+    <div class="ei-num">E06</div><div class="ei-title">Planificació mostral cooperativa</div>
+    <div class="ei-tags"><span class="ei-tag tag-ms">Mida mostral</span><span class="ei-tag tag-pr">Proporció</span></div>
+  </a>
+  <a class="ei-card" href="#ex7">
+    <div class="ei-num">E07</div><div class="ei-title">Guany econòmic per vaca</div>
+    <div class="ei-tags"><span class="ei-tag tag-est">Estimació puntual</span><span class="ei-tag tag-ic">IC Mitjana</span></div>
+  </a>
+  <a class="ei-card" href="#ex8">
+    <div class="ei-num">E08</div><div class="ei-title">Incidència de mastitis</div>
+    <div class="ei-tags"><span class="ei-tag tag-pr">IC Proporció</span><span class="ei-tag tag-ms">Mida mostral</span></div>
+  </a>
+  <a class="ei-card" href="#ex9">
+    <div class="ei-num">E09</div><div class="ei-title">Comparació de dues granges</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">Dos IC</span><span class="ei-tag tag-est">Comparació</span></div>
+  </a>
+  <a class="ei-card" href="#ex10">
+    <div class="ei-num">E10</div><div class="ei-title">Qualitat nutricional de la llet</div>
+    <div class="ei-tags"><span class="ei-tag tag-pr">IC Proporció</span><span class="ei-tag tag-est">Estimadors</span></div>
+  </a>
+  <a class="ei-card" href="#ex11">
+    <div class="ei-num">E11</div><div class="ei-title">Estudi longitudinal de pes</div>
+    <div class="ei-tags"><span class="ei-tag tag-ic">IC Mitjana</span><span class="ei-tag tag-ms">Mida</span><span class="ei-tag tag-pr">PAU estil</span></div>
+  </a>
+</div>
+
+<!-- ─── E01 ─── -->
+<div id="ex1" class="exercise-box">
+  <div class="box-label">Exercici 1 · Vaques frisones — Juny 2025, sèrie 1 <span class="diff-pill diff-pau">PAU REAL</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">Fa uns anys una granja de vaques frisones va fer un estudi sobre el pes de les seves vaques i va arribar a la conclusió que aquesta variable seguia una distribució normal amb una mitjana de 580 kg i una desviació típica de 25 kg.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Calculeu, de manera raonada, la probabilitat que si agafem a l'atzar una vaca frisona d'aquesta granja, el seu pes estigui entre 531 i 629 kg. <em>[1 punt]</em></li>
+        <li><strong>b)</strong> Creiem que un canvi en el tipus de farratge n'ha modificat la mitjana del pes. Hem obtingut el pes d'una mostra de 10 vaques escollides a l'atzar: <strong>569, 575, 611, 581, 583, 614, 589, 555, 566, 571</strong>. Trobeu un IC del 95% per a la mitjana del pes, suposant \(\sigma=25\) kg. Pot afirmar-se que la mitjana ha canviat? Justifiqueu la resposta. <em>[1,5 punts]</em></li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="100" height="105" viewBox="0 0 100 105" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="50" width="80" height="45" rx="3" fill="#f5e6c8" stroke="#c8a060" stroke-width="1.5"/>
+        <polygon points="5,53 50,12 95,53" fill="#c0392b" opacity="0.85"/>
+        <rect x="37" y="70" width="26" height="25" rx="2" fill="#8B6914" stroke="#6b4a0a" stroke-width="1"/>
+        <rect x="14" y="58" width="18" height="14" rx="2" fill="#87CEEB" stroke="#888" stroke-width="1"/>
+        <rect x="68" y="58" width="18" height="14" rx="2" fill="#87CEEB" stroke="#888" stroke-width="1"/>
+        <line x1="23" y1="58" x2="23" y2="72" stroke="#888" stroke-width="0.8"/>
+        <line x1="14" y1="65" x2="32" y2="65" stroke="#888" stroke-width="0.8"/>
+        <line x1="77" y1="58" x2="77" y2="72" stroke="#888" stroke-width="0.8"/>
+        <line x1="68" y1="65" x2="86" y2="65" stroke="#888" stroke-width="0.8"/>
+        <text x="50" y="103" text-anchor="middle" font-size="7" fill="#888">Granja frisona</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució completa</div>
+      <p><strong>a) P(531 ≤ X ≤ 629):</strong></p>
+      $$z_1 = \frac{531-580}{25} = -1{,}96 \qquad z_2 = \frac{629-580}{25} = 1{,}96$$
+      $$P(-1{,}96 \leq Z \leq 1{,}96) = 0{,}95$$
+      <div class="result-highlight">P(531 ≤ X ≤ 629) = 0,95 = 95%</div>
+      <p style="margin-top:12px"><strong>b) Càlcul de la mitjana mostral:</strong></p>
+      $$\bar{x} = \frac{569+575+611+581+583+614+589+555+566+571}{10} = \frac{5814}{10} = 581{,}4 \text{ kg}$$
+      <p>IC 95%: \(\sigma=25\), \(n=10\), \(z_{0,95}=1{,}96\)</p>
+      $$e = 1{,}96 \cdot \frac{25}{\sqrt{10}} = 1{,}96 \times 7{,}906 \approx 15{,}5 \text{ kg}$$
+      <div class="result-highlight">IC 95%: [565,9 ; 596,9] kg</div>
+      <p style="margin-top:8px"><strong>Conclusió:</strong> Com que \(580 \in [565{,}9;\ 596{,}9]\), <strong>no podem afirmar que la mitjana hagi canviat</strong> amb un 95% de confiança.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E02 ─── -->
+<div id="ex2" class="exercise-box">
+  <div class="box-label">Exercici 2 · Producció diària de llet <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">La producció diària de llet (litres) de les vaques segueix una distribució normal. Una mostra de \(n=16\) vaques dóna \(\bar{x}=28{,}4\) L/dia i la variància poblacional és \(\sigma^2=10{,}24\) L².</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Construïu un IC al 95% per a la producció mitjana diària. Interpreteu el resultat.</li>
+        <li><strong>b)</strong> Un complement alimentari promet augmentar la producció fins a 30 L/dia. És coherent aquesta afirmació amb les dades?</li>
+        <li><strong>c)</strong> Volem que l'amplada de l'IC sigui inferior a 2 L (IC 95%). Quantes vaques cal mesurar?</li>
+        <li><strong>d)</strong> Per al 99% de confiança amb el mateix error màxim (\(e &lt; 1\)), quantes vaques calen? Compareu amb c).</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="90" height="100" viewBox="0 0 90 100" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="45" cy="20" rx="22" ry="7" fill="#eee" stroke="#aaa" stroke-width="1.5"/>
+        <path d="M23,20 Q19,65 23,80 Q45,90 67,80 Q71,65 67,20" fill="white" stroke="#aaa" stroke-width="1.5"/>
+        <ellipse cx="45" cy="20" rx="20" ry="6" fill="#e8f4fb" stroke="#7ec8f0" stroke-width="1"/>
+        <path d="M67,30 Q84,40 67,60" stroke="#aaa" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <text x="45" y="53" text-anchor="middle" font-size="9" fill="#2471a3" font-weight="700">28,4 L</text>
+        <text x="45" y="65" text-anchor="middle" font-size="7.5" fill="#888">σ² = 10,24</text>
+        <text x="45" y="98" text-anchor="middle" font-size="7" fill="#888">n = 16 vaques</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p>\(\sigma^2=10{,}24 \Rightarrow \sigma=3{,}2\) L</p>
+      <p><strong>a) IC 95%:</strong> \(e = 1{,}96 \times 3{,}2/\sqrt{16} = 1{,}96 \times 0{,}8 = 1{,}568\)</p>
+      <div class="result-highlight">IC 95%: [26,83 ; 29,97] L/dia</div>
+      <p style="margin-top:8px"><strong>b)</strong> 30 L/dia queda fora de [26,83; 29,97]. No es pot avalar l'afirmació del complement al 95%.</p>
+      <p style="margin-top:8px"><strong>c) Amplada &lt; 2 L → e &lt; 1, 95%:</strong></p>
+      $$n \geq \left(\frac{1{,}96 \times 3{,}2}{1}\right)^2 = (6{,}272)^2 = 39{,}34 \Rightarrow n \geq 40$$
+      <p style="margin-top:8px"><strong>d) IC 99%, e &lt; 1:</strong> \(z_{0,99}=2{,}58\)</p>
+      $$n \geq \left(\frac{2{,}58 \times 3{,}2}{1}\right)^2 = (8{,}256)^2 = 68{,}16 \Rightarrow n \geq 69$$
+      <p>Per obtenir el 99% de confiança amb el mateix error cal <strong>quasi el doble de vaques</strong> (69 vs 40).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E03 ─── -->
+<div id="ex3" class="exercise-box">
+  <div class="box-label">Exercici 3 · Control sanitari — temperatura corporal <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">La temperatura corporal (°C) de les vaques segueix una distribució normal. El veterinari mesura 36 vaques i obté \(\bar{x}=38{,}6\)°C, \(s=0{,}8\)°C.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Justifica per qué podem usar la distribució normal malgrat no conèixer \(\sigma\).</li>
+        <li><strong>b)</strong> Construïu un IC al 99% per a la temperatura mitjana.</li>
+        <li><strong>c)</strong> La temperatura normal d'una vaca sana és entre 38,0°C i 39,0°C. Es pot afirmar que les vaques estan sanes?</li>
+        <li><strong>d)</strong> Quin valor crític \(z\) faria que 38,0°C quedés al límit inferior de l'IC? Quin nivell de confiança correspondria?</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="85" height="105" viewBox="0 0 85 105" xmlns="http://www.w3.org/2000/svg">
+        <rect x="35" y="8" width="12" height="68" rx="6" fill="white" stroke="#aaa" stroke-width="1.5"/>
+        <rect x="38" y="35" width="6" height="41" rx="3" fill="#c0392b"/>
+        <circle cx="41" cy="82" r="11" fill="#c0392b" stroke="#aaa" stroke-width="1.5"/>
+        <line x1="47" y1="20" x2="52" y2="20" stroke="#888" stroke-width="1"/>
+        <line x1="47" y1="32" x2="57" y2="32" stroke="#2471a3" stroke-width="1.5"/>
+        <line x1="47" y1="44" x2="52" y2="44" stroke="#888" stroke-width="1"/>
+        <text x="59" y="35" font-size="7.5" fill="#2471a3" font-weight="700">38,6°C</text>
+        <text x="41" y="103" text-anchor="middle" font-size="7" fill="#888">n=36, s=0,8°C</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(n=36 \geq 30\). Pel TCL, \(\bar{X}\) s'aproxima a una normal. Per a \(n\) gran, podem substituir \(\sigma\) per \(s\).</p>
+      <p style="margin-top:10px"><strong>b) IC 99%:</strong> \(z_{0,99}=2{,}58\)</p>
+      $$e = 2{,}58 \times \frac{0{,}8}{\sqrt{36}} = 2{,}58 \times \frac{0{,}8}{6} \approx 0{,}344°C$$
+      <div class="result-highlight">IC 99%: [38,256 ; 38,944] °C</div>
+      <p style="margin-top:10px"><strong>c)</strong> L'IC [38,256; 38,944] queda <em>completament dins</em> de [38,0; 39,0]. <strong>Sí, les vaques estan sanes</strong> amb un 99% de confiança.</p>
+      <p style="margin-top:10px"><strong>d)</strong> \(L_i = 38{,}0\): \(38{,}0 = 38{,}6 - z \times 0{,}8/6 \Rightarrow z = 0{,}6 \times 6 / 0{,}8 = 4{,}5\)</p>
+      <p>\(z=4{,}5\) correspon a un nivell de confiança \(\approx 99{,}999\%\). Amb qualsevol nivell habitual, 38,0°C sempre queda fora del IC per la part inferior.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E04 ─── -->
+<div id="ex4" class="exercise-box">
+  <div class="box-label">Exercici 4 · Consum de pinso per dia <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="exercise-title">El consum diari de pinso (kg) de les vaques segueix \(N(\mu, 4)\). Una mostra de \(n=25\) vaques dóna \(\bar{x}=18{,}7\) kg/dia. \((\sigma^2=4 \Rightarrow \sigma=2)\)</div>
+  <ul class="exercise-questions">
+    <li><strong>a)</strong> Construïu ICs al 90% i al 99% per al consum mitjà diari.</li>
+    <li><strong>b)</strong> Compareu les amplades. Quin és més ampli i per qué?</li>
+    <li><strong>c)</strong> Per reduir l'amplada de l'IC 95% a la meitat respecte a \(n=25\), quantes vaques cal mesurar?</li>
+    <li><strong>d)</strong> La normativa europea exigeix consum ≤ 20 kg/dia. Pot garantir-se el compliment amb un 95% de confiança?</li>
+  </ul>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p>Error estàndard: \(\sigma/\sqrt{n} = 2/5 = 0{,}4\)</p>
+      <p><strong>a) IC 90%</strong> \((z=1{,}645)\): \(e=1{,}645 \times 0{,}4 = 0{,}658\)</p>
+      <div class="result-highlight">IC 90%: [18,042 ; 19,358] kg/dia</div>
+      <p><strong>IC 99%</strong> \((z=2{,}58)\): \(e=2{,}58 \times 0{,}4 = 1{,}032\)</p>
+      <div class="result-highlight">IC 99%: [17,668 ; 19,732] kg/dia</div>
+      <p style="margin-top:8px"><strong>b)</strong> Amplades: 1,316 kg (90%) vs 2,064 kg (99%). L'IC 99% és <strong>un 57% més ample</strong>. Més confiança = rang més gran.</p>
+      <p style="margin-top:8px"><strong>c) Reduir amplada a la meitat:</strong> cal quadruplicar la mostra: de 25 a <strong>100 vaques</strong>.</p>
+      <p style="margin-top:8px"><strong>d) Normativa:</strong> IC 95% → \(e=1{,}96 \times 0{,}4=0{,}784\) → [17,916; 19,484]. El límit superior és 19,484 &lt; 20. <strong>Sí, es compleix la normativa</strong> amb un 95% de confiança.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E05 ─── -->
+<div id="ex5" class="exercise-box">
+  <div class="box-label">Exercici 5 · Proporció de vaques de raça frisona pura <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">El propietari sospita que no totes les vaques catalogades com a "frisones pures" ho són. En una mostra de 400 vaques, 312 compleixen tots els criteris de la raça pura.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Calculeu \(\hat{p}\) i verifiqueu les condicions d'aplicació del IC per a proporcions.</li>
+        <li><strong>b)</strong> Construïu un IC al 95% per a la proporció real de frisones pures.</li>
+        <li><strong>c)</strong> El proveïdor assegura que el 85% de les vaques que ven són pures. Podeu desmentir l'afirmació?</li>
+        <li><strong>d)</strong> Per al mateix error màxim de 0,04 i nivell 95%, quantes vaques caldria si no se'n sabia res prèviament?</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="105" height="100" viewBox="0 0 105 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="52" cy="48" r="38" fill="#eaf2fb" stroke="#2471a3" stroke-width="2"/>
+        <path d="M52,48 L52,10 A38,38 0 1 1 22.8,76.3 Z" fill="#2471a3" opacity="0.75"/>
+        <text x="63" y="42" font-size="11" fill="white" font-weight="700">78%</text>
+        <text x="65" y="54" font-size="7.5" fill="white">Pures</text>
+        <text x="20" y="88" font-size="8" fill="#c0392b" font-weight="600">22% altres</text>
+        <text x="52" y="98" text-anchor="middle" font-size="7" fill="#888">n = 400</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(\hat{p}=312/400=0{,}78\), \(\hat{q}=0{,}22\). Condicions: \(n\hat{p}=312 \geq 5\) ✓ | \(n\hat{q}=88 \geq 5\) ✓</p>
+      <p style="margin-top:8px"><strong>b) IC 95%:</strong></p>
+      $$e = 1{,}96 \sqrt{\frac{0{,}78 \times 0{,}22}{400}} = 1{,}96 \times 0{,}02071 = 0{,}0406$$
+      <div class="result-highlight">IC 95%: [73,9% ; 82,1%]</div>
+      <p style="margin-top:8px"><strong>c)</strong> 0,85 \(\notin\) [0,739; 0,821]. <strong>Podem desmentir l'afirmació</strong> amb un 95% de confiança.</p>
+      <p style="margin-top:8px"><strong>d) Sense estimació prèvia</strong> (\(\hat{p}=0{,}5\), \(e=0{,}04\), 95%):</p>
+      $$n \geq \frac{(1{,}96)^2 \times 0{,}25}{(0{,}04)^2} = \frac{3{,}8416 \times 0{,}25}{0{,}0016} = 600{,}25 \Rightarrow n \geq 601$$
+    </div>
+  </div>
+</div>
+
+<!-- ─── E06 ─── -->
+<div id="ex6" class="exercise-box">
+  <div class="box-label">Exercici 6 · Planificació mostral — Cooperativa agrícola <span class="diff-pill diff-pau">PAU ESTIL</span></div>
+  <div class="exercise-title">Una cooperativa vol estudiar el pes mitjà de les vaques de les 50 granges associades. La desviació típica del pes és \(\sigma=30\) kg.</div>
+  <ul class="exercise-questions">
+    <li><strong>a)</strong> Quantes vaques cal mesurar per tenir un error inferior a 6 kg amb un 90% de confiança?</li>
+    <li><strong>b)</strong> Si es vol l'error inferior a 3 kg amb un 95% de confiança, quantes vaques calen?</li>
+    <li><strong>c)</strong> La proporció de vaques que superen 600 kg és del 32% (estudi pilot). Quantes vaques cal mesurar per estimar aquesta proporció amb error màxim 0,03 i 99% confiança?</li>
+    <li><strong>d)</strong> Sense cap estimació prèvia, quina seria la mida mostral mínima per a l'apartat c)?</li>
+  </ul>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(n \geq (1{,}645 \times 30/6)^2 = (8{,}225)^2 = 67{,}65 \Rightarrow\) <strong>n ≥ 68</strong></p>
+      <p><strong>b)</strong> \(n \geq (1{,}96 \times 30/3)^2 = (19{,}6)^2 = 384{,}16 \Rightarrow\) <strong>n ≥ 385</strong></p>
+      <p><strong>c)</strong> \(\hat{p}=0{,}32\), \(e=0{,}03\), \(z=2{,}58\):</p>
+      $$n \geq \frac{6{,}6564 \times 0{,}32 \times 0{,}68}{0{,}0009} = \frac{1{,}4484}{0{,}0009} \approx 1609 \Rightarrow \mathbf{n \geq 1610}$$
+      <p><strong>d)</strong> \(\hat{p}=0{,}5\):</p>
+      $$n \geq \frac{6{,}6564 \times 0{,}25}{0{,}0009} = \frac{1{,}6641}{0{,}0009} = 1849 \Rightarrow \mathbf{n \geq 1849}$$
+    </div>
+  </div>
+</div>
+
+<!-- ─── E07 ─── -->
+<div id="ex7" class="exercise-box">
+  <div class="box-label">Exercici 7 · Guany econòmic per vaca <span class="diff-pill diff-pau">PAU ESTIL</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">El guany econòmic anual (€) per vaca segueix una distribució normal. Una mostra de 20 vaques dóna els guanys (€): 1820, 1950, 2100, 1760, 1890, 2050, 1980, 1840, 2030, 1970, 1900, 2080, 1760, 1830, 1910, 2000, 1870, 1940, 1990, 1860.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Calculeu la mitjana mostral \(\bar{x}\) i la desviació típica mostral \(s\).</li>
+        <li><strong>b)</strong> Construïu un IC al 95% per al guany econòmic mitjà anual per vaca.</li>
+        <li><strong>c)</strong> La granja necessita un guany mínim de 1800€/vaca per ser rendible. Pot afirmar-se, amb un 95% de confiança, que la granja és rendible?</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="90" height="100" viewBox="0 0 90 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="42" r="32" fill="#fef9ec" stroke="#d4a017" stroke-width="2.5"/>
+        <circle cx="45" cy="42" r="25" fill="none" stroke="#d4a017" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+        <text x="45" y="49" text-anchor="middle" font-size="22" fill="#d4a017" font-weight="900">€</text>
+        <text x="45" y="86" text-anchor="middle" font-size="8" fill="#2471a3" font-weight="700">n = 20 vaques</text>
+        <text x="45" y="98" text-anchor="middle" font-size="7" fill="#888">Guany anual</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a) Mitjana mostral:</strong> \(\bar{x} = 38910/20 = 1945{,}5\) €</p>
+      <p>\(\sum x_i^2 - n\bar{x}^2 = 75899900 - 20 \times 1945{,}5^2 = 216695\)</p>
+      <p>\(s^2 = 216695/19 \approx 11405 \Rightarrow s \approx 106{,}8\) €</p>
+      <div class="result-highlight">\(\bar{x} = 1945{,}5\) € · \(s \approx 106{,}8\) €</div>
+      <p style="margin-top:10px"><strong>b) IC 95%:</strong> La variable és normal, podem usar \(z\) per a \(n=20\).</p>
+      $$e = 1{,}96 \times \frac{106{,}8}{\sqrt{20}} = 1{,}96 \times 23{,}88 = 46{,}8 \text{ €}$$
+      <div class="result-highlight">IC 95%: [1898,7 ; 1992,3] €/vaca/any</div>
+      <p style="margin-top:10px"><strong>c) Rendibilitat:</strong> El límit inferior 1898,7 € &gt; 1800 €. <strong>Sí, la granja és rendible</strong> amb un 95% de confiança.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E08 ─── -->
+<div id="ex8" class="exercise-box">
+  <div class="box-label">Exercici 8 · Incidència de mastitis <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">La mastitis és la infecció mamària més freqüent en vaques lleters. En una mostra de 250 vaques, 35 han patit mastitis en el darrer any.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Calculeu \(\hat{p}\) i verifiqueu les condicions d'aplicació.</li>
+        <li><strong>b)</strong> Construïu un IC al 95% per a la incidència real de mastitis.</li>
+        <li><strong>c)</strong> L'associació veterinària alerta si la incidència supera el 15%. Es pot considerar la granja en situació d'alerta?</li>
+        <li><strong>d)</strong> Quantes vaques cal observar per estimar la incidència amb error màxim 2% (0,02) i 99% de confiança?</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="90" height="95" viewBox="0 0 90 95" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="42" r="35" fill="#fdf2f8" stroke="#8e44ad" stroke-width="2"/>
+        <rect x="38" y="25" width="14" height="34" rx="4" fill="#8e44ad" opacity="0.8"/>
+        <rect x="27" y="36" width="36" height="14" rx="4" fill="#8e44ad" opacity="0.8"/>
+        <text x="45" y="88" text-anchor="middle" font-size="8" fill="#8e44ad" font-weight="700">35/250 = 14%</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(\hat{p}=35/250=0{,}14\), \(\hat{q}=0{,}86\). \(n\hat{p}=35 \geq 5\) ✓ | \(n\hat{q}=215 \geq 5\) ✓</p>
+      <p style="margin-top:8px"><strong>b) IC 95%:</strong></p>
+      $$e = 1{,}96\sqrt{\frac{0{,}14 \times 0{,}86}{250}} = 1{,}96 \times 0{,}02195 = 0{,}04302$$
+      <div class="result-highlight">IC 95%: [9,7% ; 18,3%]</div>
+      <p style="margin-top:8px"><strong>c)</strong> L'IC [9,7%; 18,3%] <em>conté</em> el 15%. <strong>No podem concloure si la granja supera o no el llindar</strong>: caldria ampliar la mostra per obtenir un IC més precís.</p>
+      <p style="margin-top:8px"><strong>d)</strong> \(\hat{p}=0{,}14\), \(e=0{,}02\), \(z=2{,}58\):</p>
+      $$n \geq \frac{6{,}6564 \times 0{,}14 \times 0{,}86}{0{,}0004} = \frac{0{,}8014}{0{,}0004} = 2003{,}5 \Rightarrow n \geq 2004$$
+    </div>
+  </div>
+</div>
+
+<!-- ─── E09 ─── -->
+<div id="ex9" class="exercise-box">
+  <div class="box-label">Exercici 9 · Comparació de dues granges <span class="diff-pill diff-pau">PAU ESTIL</span></div>
+  <div class="exercise-title">Dues granges frisones amb \(\sigma=20\) kg. Granja A: \(n_A=36\), \(\bar{x}_A=590\) kg. Granja B: \(n_B=49\), \(\bar{x}_B=575\) kg.</div>
+  <ul class="exercise-questions">
+    <li><strong>a)</strong> Construïu un IC al 95% per al pes mitjà de cada granja.</li>
+    <li><strong>b)</strong> Els dos intervals se solapen? Què implica estadísticament?</li>
+    <li><strong>c)</strong> El comprador paga una prima si el pes mitjà supera 580 kg. Quina granja pot acreditar la prima amb un 95% de confiança?</li>
+    <li><strong>d)</strong> Per a la Granja B, quina mida mostral faria que el límit inferior de l'IC 95% superés 570 kg?</li>
+  </ul>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a) ICs al 95%:</strong></p>
+      <p>A: \(e_A = 1{,}96 \times 20/6 = 6{,}53\)</p>
+      <div class="result-highlight">IC A: [583,47 ; 596,53] kg</div>
+      <p>B: \(e_B = 1{,}96 \times 20/7 = 5{,}60\)</p>
+      <div class="result-highlight">IC B: [569,40 ; 580,60] kg</div>
+      <p style="margin-top:8px"><strong>b) Solapament:</strong> IC A = [583,47; 596,53] i IC B = [569,40; 580,60]. <strong>No se solapen</strong> (màx B = 580,60 &lt; mín A = 583,47). Suggereix que les granges podrien tenir pesos realment diferents.</p>
+      <p style="margin-top:8px"><strong>c)</strong> IC A completament per sobre de 580 ✓ → <strong>Granja A acredita la prima</strong>. IC B conté el 580 → no conclusiu per a Granja B.</p>
+      <p style="margin-top:8px"><strong>d)</strong> \(575 - 1{,}96 \times 20/\sqrt{n} &gt; 570 \Rightarrow 1{,}96 \times 20/\sqrt{n} &lt; 5 \Rightarrow \sqrt{n} &gt; 7{,}84 \Rightarrow n &gt; 61{,}5 \Rightarrow\) <strong>n ≥ 62</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── E10 ─── -->
+<div id="ex10" class="exercise-box">
+  <div class="box-label">Exercici 10 · Qualitat nutricional de la llet <span class="diff-pill diff-adv">AVANÇAT</span></div>
+  <div class="exercise-title">El contingut en proteïnes de la llet (%) d'una granja segueix una distribució normal. Una mostra de 45 mostres de llet dóna \(\bar{x}=3{,}42\%\) i \(s=0{,}18\%\).</div>
+  <ul class="exercise-questions">
+    <li><strong>a)</strong> Calculeu l'estimació puntual del contingut mitjà de proteïnes i del seu error estàndard.</li>
+    <li><strong>b)</strong> Construïu un IC al 99% per al contingut mitjà de proteïnes.</li>
+    <li><strong>c)</strong> El certificat de qualitat premium exigeix un contingut en proteïnes d'almenys 3,3%. Es pot atorgar el certificat amb un 99% de confiança?</li>
+    <li><strong>d)</strong> Per garantir un error màxim de 0,02% amb un 95% de confiança, quantes mostres de llet cal analitzar?</li>
+  </ul>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(\hat{\mu}=3{,}42\%\). Error estàndard: \(s/\sqrt{n}=0{,}18/\sqrt{45}=0{,}18/6{,}708=0{,}02684\%\)</p>
+      <div class="result-highlight">\(\hat{\mu}=3{,}42\%\) · Error estàndard ≈ 0,0268%</div>
+      <p style="margin-top:8px"><strong>b) IC 99%:</strong> \(n=45 \geq 30\), \(z=2{,}58\)</p>
+      $$e = 2{,}58 \times 0{,}02684 = 0{,}0692\%$$
+      <div class="result-highlight">IC 99%: [3,351% ; 3,489%]</div>
+      <p style="margin-top:8px"><strong>c)</strong> Límit inferior 3,351% &gt; 3,3%. <strong>Sí, es pot atorgar el certificat premium</strong> amb un 99% de confiança.</p>
+      <p style="margin-top:8px"><strong>d)</strong> \(e=0{,}02\), \(\sigma \approx s=0{,}18\), \(z=1{,}96\):</p>
+      $$n \geq \left(\frac{1{,}96 \times 0{,}18}{0{,}02}\right)^2 = (17{,}64)^2 = 311{,}17 \Rightarrow n \geq 312$$
+    </div>
+  </div>
+</div>
+
+<!-- ─── E11 ─── -->
+<div id="ex11" class="exercise-box">
+  <div class="box-label">Exercici 11 · Estudi longitudinal — Evolució del pes <span class="diff-pill diff-pau">PAU ESTIL</span></div>
+  <div class="illus-row">
+    <div class="illus-text">
+      <div class="exercise-title">Seguiment del pes durant dos anys (\(\sigma=25\) kg coneguda). <strong>Any 1:</strong> \(n_1=25\), \(\bar{x}_1=578\) kg. <strong>Any 2</strong> (canvi de dieta): \(n_2=25\), \(\bar{x}_2=591\) kg.</div>
+      <ul class="exercise-questions">
+        <li><strong>a)</strong> Construïu un IC al 95% per al pes mitjà de cada any.</li>
+        <li><strong>b)</strong> Els dos IC se solapen? Pot afirmar-se que la dieta ha tingut un efecte estadísticament significatiu?</li>
+        <li><strong>c)</strong> Calculeu la mida mostral necessària perquè el límit inferior de l'IC de l'any 2 superi els 580 kg (IC 95%).</li>
+        <li><strong>d)</strong> A l'any 1 el 20% de les vaques pesava més de 600 kg; a l'any 2 en pesen el 30% (\(n=100\)). Construïu un IC al 95% per a la proporció de l'any 2 i concloeu si ha augmentat significativament.</li>
+      </ul>
+    </div>
+    <div class="illus-fig">
+      <svg width="110" height="108" viewBox="0 0 110 108" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#ccc"/>
+          </marker>
+          <marker id="arry" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#d4a017"/>
+          </marker>
+        </defs>
+        <line x1="10" y1="82" x2="100" y2="82" stroke="#ccc" stroke-width="2" marker-end="url(#arrd)"/>
+        <circle cx="28" cy="62" r="14" fill="#eaf2fb" stroke="#2471a3" stroke-width="2"/>
+        <text x="28" y="58" text-anchor="middle" font-size="7.5" fill="#2471a3" font-weight="700">Any 1</text>
+        <text x="28" y="69" text-anchor="middle" font-size="7" fill="#2471a3">578 kg</text>
+        <circle cx="78" cy="50" r="17" fill="#eafaf1" stroke="#1e8449" stroke-width="2"/>
+        <text x="78" y="46" text-anchor="middle" font-size="7.5" fill="#1e8449" font-weight="700">Any 2</text>
+        <text x="78" y="57" text-anchor="middle" font-size="7" fill="#1e8449">591 kg</text>
+        <path d="M42,57 Q57,40 61,46" stroke="#d4a017" stroke-width="2" fill="none" marker-end="url(#arry)"/>
+        <text x="55" y="38" font-size="8" fill="#d4a017" font-weight="700">+13 kg</text>
+        <text x="55" y="100" text-anchor="middle" font-size="7" fill="#888">Anys 1 i 2 · σ = 25 kg</text>
+      </svg>
+    </div>
+  </div>
+  <div class="solution-toggle">
+    <button class="toggle-btn" onclick="toggleSolution(this)">▶ Veure solució</button>
+    <div class="solution-content">
+      <div class="sol-label">Solució</div>
+      <p><strong>a)</strong> \(e = 1{,}96 \times 25/5 = 9{,}8\) kg</p>
+      <div class="result-highlight">IC Any 1 — 95%: [568,2 ; 587,8] kg</div>
+      <div class="result-highlight">IC Any 2 — 95%: [581,2 ; 600,8] kg</div>
+      <p style="margin-top:8px"><strong>b) Solapament:</strong> IC1 = [568,2; 587,8] i IC2 = [581,2; 600,8]. Se solapen lleugerament (581,2 a 587,8). Quan dos ICs individuals se solapen, <strong>no podem concloure directament</strong> que \(\mu_1 \neq \mu_2\). Cal un IC per a la diferència per concloure formalment.</p>
+      <p style="margin-top:8px"><strong>c) \(L_i &gt; 580\):</strong></p>
+      $$591 - 1{,}96 \times 25/\sqrt{n} &gt; 580 \Rightarrow 1{,}96 \times 25/\sqrt{n} &lt; 11 \Rightarrow \sqrt{n} &gt; 4{,}454 \Rightarrow n &gt; 19{,}84 \Rightarrow n \geq 20$$
+      <p style="margin-top:8px"><strong>d) IC proporció Any 2:</strong> \(\hat{p}=0{,}30\), \(n=100\)</p>
+      $$e = 1{,}96\sqrt{0{,}30 \times 0{,}70/100} = 1{,}96 \times 0{,}04583 = 0{,}0898$$
+      <div class="result-highlight">IC Any 2 — 95%: [21,0% ; 39,0%]</div>
+      <p>La proporció de l'any 1 era el 20%. El valor 20% queda <em>just al límit inferior</em> del IC de l'any 2 [21,0%; 39,0%]. <strong>No podem concloure que la proporció hagi augmentat significativament</strong> amb \(n=100\). Caldria una mostra més gran.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- TAULA DE VALORS Z                           -->
+<!-- ════════════════════════════════════════════ -->
+<hr class="section-divider">
+<div id="taula-z" class="section-header">
+  <div class="section-num">Referència</div>
+  <h2>Valors z i nivells de confiança</h2>
+</div>
+
+<p>A PAU, les fórmules donat solen incloure \(P(-1{,}96 \leq Z \leq 1{,}96) = 0{,}95\) i \(P(-2{,}58 \leq Z \leq 2{,}58) = 0{,}99\). La taula completa és:</p>
+
+<table class="z-table">
+  <thead>
+    <tr>
+      <th>Nivell de confiança \(1-\alpha\)</th>
+      <th>\(\alpha\)</th>
+      <th>\(\alpha/2\)</th>
+      <th>\(z_\gamma\)</th>
+      <th>Interpretació</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>80%</td><td>0,20</td><td>0,10</td><td>1,282</td><td>1 de cada 5 IC no contindrà μ</td></tr>
+    <tr><td>90%</td><td>0,10</td><td>0,05</td><td>1,645</td><td>1 de cada 10 IC no contindrà μ</td></tr>
+    <tr><td>95%</td><td>0,05</td><td>0,025</td><td>1,960</td><td>1 de cada 20 IC no contindrà μ</td></tr>
+    <tr><td>99%</td><td>0,01</td><td>0,005</td><td>2,576</td><td>1 de cada 100 IC no contindrà μ</td></tr>
+    <tr><td>99,9%</td><td>0,001</td><td>0,0005</td><td>3,291</td><td>1 de cada 1000 IC no contindrà μ</td></tr>
+  </tbody>
+</table>
+
+<div class="theory-box">
+  <div class="box-label">Com llegir el valor z a l'examen</div>
+  <p>A les PAU de Batxillerat, les fórmules acostumen a donar directament les probabilitats. Quan l'enunciat diu <em>"interval de confiança del 95%"</em>:</p>
+  <p>\(P(-1{,}96 \leq Z \leq 1{,}96) = 0{,}95\) → usem \(z_\gamma = 1{,}96\)</p>
+  <p style="margin:0">Quan diu <em>"interval de confiança del 99%"</em>:</p>
+  <p style="margin:0">\(P(-2{,}58 \leq Z \leq 2{,}58) = 0{,}99\) → usem \(z_\gamma = 2{,}58\)</p>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- RESUM FINAL                                 -->
+<!-- ════════════════════════════════════════════ -->
+<div id="resum" class="summary-box" style="margin-top:56px">
+  <div class="box-label">Resum Global · Guia ràpida de fórmules</div>
+  <h4>Totes les fórmules en un cop d'ull</h4>
+  <div class="summary-grid">
+    <div class="summary-item">
+      <div class="si-label">IC Mitjana (σ coneguda)</div>
+      <div class="si-val">x̄ ± z·σ/√n</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">IC Mitjana (σ descon., n≥30)</div>
+      <div class="si-val">x̄ ± z·s/√n</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">IC Proporció</div>
+      <div class="si-val">p̂ ± z·√(p̂q̂/n)</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">Mida mostral (mitjana)</div>
+      <div class="si-val">n ≥ (z·σ/e)²</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">Mida mostral (proporció)</div>
+      <div class="si-val">n ≥ z²·p̂q̂/e²</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">Error estàndard (TCL)</div>
+      <div class="si-val">σ_x̄ = σ/√n</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">95% confiança</div>
+      <div class="si-val">z = 1,96</div>
+    </div>
+    <div class="summary-item">
+      <div class="si-label">99% confiança</div>
+      <div class="si-val">z = 2,58</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .content -->
+</div><!-- end #main -->
+
+<footer class="page-footer">
+  Inferència Estadística · Intervals de Confiança · Matemàtiques 2n Batxillerat · Nivell Avançat · 11 Exercicis resolts
+</footer>
+
+<script>
+function toggleSolution(btn) {
+  const content = btn.nextElementSibling;
+  if (content.classList.contains('open')) {
+    content.classList.remove('open');
+    btn.textContent = '▶ Veure solució';
+  } else {
+    content.classList.add('open');
+    btn.textContent = '▼ Amagar solució';
+  }
+}
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('[id]');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.getBoundingClientRect().top;
+    if (top <= 120) current = section.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
